@@ -11,8 +11,8 @@ namespace chat.Controllers
         //登入頁面
         public ActionResult Index(String errorMsg)
         {
-            if (errorMsg.Length > 0)
-                ViewData["errorMsg"] = errorMsg;
+            //if (errorMsg.Length > 0)
+            //    ViewData["errorMsg"] = errorMsg;
                 
             return View();
         }

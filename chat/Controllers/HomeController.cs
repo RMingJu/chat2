@@ -13,6 +13,11 @@ namespace chat.Controllers
             return View();
         }
 
+        public ActionResult Registration()
+        {
+            return View();
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
