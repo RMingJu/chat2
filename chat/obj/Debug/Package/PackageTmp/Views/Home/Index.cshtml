@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    .hello {
+        color: red;
+    }
+</style>
+<div class="jumbotron">
+    <h1>聊天室</h1>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.signalR-2.3.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        $(function () {
+            var userID = $("#name").val();
+            while (userID.length == 0) {
+                userID = window.prompt("請輸入使用者名稱");
+                if (!userID)
+                    userID = "";
+            }
+            $("#name").val(userID);
+            var testHub = $.connection.testHubs;
+            testHub.client.addNewMessageToPage = function (name, message) {
+                $('#discussion').append('<li><strong>' + htmlEncode(name)
+                    + '</strong>: ' + htmlEncode(message) + '</li>');
+                };
+            testHub.client.hello = function (message) {
+                    $("#discussion").append("<li class='hello'>" + message + "</li");
+                };
+            $('#message').focus();
+
+            //打開連線
+            $.connection.hub.start().done(function () {
+                testHub.server.hello(userID);
+                $('#sendmessage').click(function () {
+                    testHub.server.send($('#name').val(), $('#message').val());
+                    $('#message').val('').focus();
+                });
+            });
+            
+        });
+        //鍵盤enter傳送訊息
+        var input = document.getElementById("message");
+        input.addEventListener("keyup", function (event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                document.getElementById("sendmessage").click();
+            }
+        });
+
+
+
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h2></h2>
+        <div class="container">
+            <ul id="discussion"></ul>
+            <input type="text" style="display:none;" id="name" class="form-control" placeholder="姓名" />
+            <input type="text" id="message" class="form-control" placeholder="輸入內容" />
+            <input type="button" id="sendmessage" value="Send" class="btn btn-primary" />
+        </div>
+
+
+
+
+    </div>
+    <div class="col-md-4">
+      
+    </div>
+    <div class="col-md-4">
+
+    </div>
+</div>
