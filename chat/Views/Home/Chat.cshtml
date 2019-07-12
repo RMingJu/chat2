@@ -31,8 +31,9 @@
 </head>
 <body>
     <h2></h2>
-    <input type="text" id="userID" value="mark">
+    
     <div id="app">
+        <input type="text" id="userID" value="mark">
         <template v-for="x in todos">
             <div class="container" v-bind:class="{ darker:x.myMessage}">
                 <img v-bind:src=x.img class="avatar" :class="{right: x.myMessage}" alt="Avatar" style="width:100%;">
@@ -60,43 +61,46 @@
     <script>
 
 
-        //
+        /*
         var messageData = [{
             myMessage: false,
             userID: 'mark',
             type: 'user',
-            img: '/userImg/bandmember.jpg',
+            img: '@Href("~/userImg/bandmember.jpg")',
             text: 'Hello. How are you today?',
             time: '11:00'
         }, {
             myMessage: true,
             userID: 'mary',
             type: 'user',
-            img: '/userImg/avatar_g2.jpg',
+            img: '@Href("~/userImg/avatar_g2.jpg")',
             text: "Hey! I'm fine. Thanks for asking!",
             time: '11:01'
         }, {
             myMessage: false,
             userID: 'mark',
             type: 'user',
-            img: '/userImg/bandmember.jpg',
+            img: '@Href("~/userImg/bandmember.jpg")',
             text: "Sweet! So, what do you wanna do today?",
             time: '11:02'
         }, {
             myMessage: true,
             userID: 'mary',
             type: 'user',
-            img: '/userImg/avatar_g2.jpg',
+            img: '@Href("~/userImg/avatar_g2.jpg")',
             text: "Nah, I dunno. Play soccer.. or learn more coding perhaps?",
             time: '11:03'
         }];
+        */
+
+        var messageData = [];
 
 
         //建立hub
         var testHub = $.connection.testHubs;
 
         //用戶名稱
-        var userID = "mark"
+        var userID = window.prompt("請輸入使用者名稱");
 
         //建立連線
         $.connection.hub.start().done(function () {
@@ -118,13 +122,37 @@
                 myMessage: false,
                 userID: '聊天室小天使',
                 type: 'user',
-                img: '/userImg/admin.jpg',
+                img: '@Href("~/userImg/admin.jpg")',
                 text: message,
                 time: datetime
             }
             messageData.push(helloMessage);
             console.log(message);
         };
+
+        //addNewMessageToPage
+        testHub.client.addNewMessageToPage = function (name, message) {
+
+                var currentdate = new Date(); 
+                var datetime = "時間: " + currentdate.getDate() + "/"
+                    + (currentdate.getMonth()+1)  + "/" 
+                    + currentdate.getFullYear() + " @@ "  
+                    + currentdate.getHours() + ":"  
+                    + currentdate.getMinutes() + ":" 
+                    + currentdate.getSeconds();
+
+                let isMyMessage = false;
+                if (userID == name) isMyMessage = true;
+                let helloMessage = {
+                    myMessage: isMyMessage,
+                    userID: name,
+                    type: 'user',
+                    img: '@Href("~/userImg/")' + 'admin.jpg',
+                    text: message,
+                    time: datetime
+                }
+                messageData.push(helloMessage);
+                };
 
        
         //vue
@@ -155,8 +183,10 @@
                     //window.scrollTo(0, document.body.scrollHeight);
 
                     
-                    testHub.server.send(userID, $('#message').val());
-                    
+                    //傳送訊息至Server端
+                    testHub.server.send(userID, $('#txtMessage').val());
+                    //清空訊息欄位
+                    $('#txtMessage').val('');
 
 
 
