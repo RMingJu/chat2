@@ -1,7 +1,4 @@
-﻿
-@{
-    Layout = null;
-}
+﻿ @{ Layout = null; }
 
 <!DOCTYPE html>
 
@@ -25,13 +22,15 @@
 <script src="~/signalr/hubs"></script>
 
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>聊天對戰</title>
 </head>
+
 <body>
     <h2></h2>
-    
+
     <div id="app">
         <input type="text" id="userID" value="mark">
         <template v-for="x in todos">
@@ -50,7 +49,7 @@
         <br>
         <nav class="navbar fixed-bottom navbar-dark bg-dark">
             <div class="input-group mb-3">
-                <input v-on:keyup.13="quickSendMessage" type="text" id="txtMessage" class="form-control" placeholder="輸入文字..." aria-label="輸入文字..." aria-describedby="basic-addon2">
+                <input v-on:keyup.13="sendMessage" type="text" id="txtMessage" class="form-control" placeholder="輸入文字..." aria-label="輸入文字..." aria-describedby="basic-addon2">
                 <div class="input-group-append">
                     <button v-on:click="sendMessage" id="btnSend" class="btn btn-outline-success" type="button">傳送</button>
                 </div>
@@ -58,41 +57,9 @@
         </nav>
     </div>
 
+    <!-- Hub -->
     <script>
-
-
-        /*
-        var messageData = [{
-            myMessage: false,
-            userID: 'mark',
-            type: 'user',
-            img: '@Href("~/userImg/bandmember.jpg")',
-            text: 'Hello. How are you today?',
-            time: '11:00'
-        }, {
-            myMessage: true,
-            userID: 'mary',
-            type: 'user',
-            img: '@Href("~/userImg/avatar_g2.jpg")',
-            text: "Hey! I'm fine. Thanks for asking!",
-            time: '11:01'
-        }, {
-            myMessage: false,
-            userID: 'mark',
-            type: 'user',
-            img: '@Href("~/userImg/bandmember.jpg")',
-            text: "Sweet! So, what do you wanna do today?",
-            time: '11:02'
-        }, {
-            myMessage: true,
-            userID: 'mary',
-            type: 'user',
-            img: '@Href("~/userImg/avatar_g2.jpg")',
-            text: "Nah, I dunno. Play soccer.. or learn more coding perhaps?",
-            time: '11:03'
-        }];
-        */
-
+        //連天訊息
         var messageData = [];
 
 
@@ -103,24 +70,18 @@
         var userID = window.prompt("請輸入使用者名稱");
 
         //建立連線
-        $.connection.hub.start().done(function () {
+        $.connection.hub.start().done(function() {
             testHub.server.hello(userID);
         });
         //連線成功顯示歡迎訊息
-        testHub.client.hello = function (message) {
+        testHub.client.hello = function(message) {
 
-            var currentdate = new Date(); 
-            var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " @@ "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+            var datetime = GetDateTime()
 
 
             let helloMessage = {
                 myMessage: false,
-                userID: '聊天室小天使',
+                userID: '聊天室小幫手',
                 type: 'user',
                 img: '@Href("~/userImg/admin.jpg")',
                 text: message,
@@ -131,73 +92,62 @@
         };
 
         //addNewMessageToPage
-        testHub.client.addNewMessageToPage = function (name, message) {
+        testHub.client.addNewMessageToPage = function(name, message) {
 
-                var currentdate = new Date(); 
-                var datetime = "時間: " + currentdate.getDate() + "/"
-                    + (currentdate.getMonth()+1)  + "/" 
-                    + currentdate.getFullYear() + " @@ "  
-                    + currentdate.getHours() + ":"  
-                    + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds();
 
-                let isMyMessage = false;
-                if (userID == name) isMyMessage = true;
-                let helloMessage = {
-                    myMessage: isMyMessage,
-                    userID: name,
-                    type: 'user',
-                    img: '@Href("~/userImg/")' + 'admin.jpg',
-                    text: message,
-                    time: datetime
-                }
-                messageData.push(helloMessage);
-                };
+            var datetime = GetDateTime()
 
-       
-        //vue
+            let isMyMessage = false;
+            if (userID == name) isMyMessage = true;
+            let helloMessage = {
+                myMessage: isMyMessage,
+                userID: name,
+                type: 'user',
+                img: '@Href("~/userImg/")' + 'admin.jpg',
+                text: message,
+                time: datetime
+            }
+            messageData.push(helloMessage);
+        };
+
+
+        function GetDateTime() {
+            var currentdate = new Date();
+            var datetime = "時間: " + currentdate.getFullYear() + "/" +
+                (currentdate.getMonth() + 1) + "/" +
+                currentdate.getDate() + "  " +
+                currentdate.getHours() + ":" +
+                currentdate.getMinutes() + ":" +
+                currentdate.getSeconds();
+            return datetime
+        }
+    </script>
+
+
+    <!-- Vue -->
+    <script>
         myObject = new Vue({
             el: '#app',
             data: {
                 todos: messageData
             },
             methods: {
-                sendMessage: function () {
-                    // console.log(this.todos);
-                    //var obj = {
-                    //    myMessage: true,
-                    //    userID: 'mary',
-                    //    type: "user",
-                    //    img: '/userImg/avatar_g2.jpg',
-                    //    text: "Nah, I dunno. Play soccer.. or learn more coding perhaps?",
-                    //    time: '11:04'
-                    //};
-                    //var txtmessage = $("#txtMessage").val();
-                    //console.log('txtmessage :', txtmessage);
+                sendMessage: function() {
 
-                    //if (this.todos == null) {
-                    //    this.todos = JSON.parse(obj);
-                    //} else {
-                    //    this.todos.push(obj);
-                    //}
-                    //window.scrollTo(0, document.body.scrollHeight);
+                    //使用者發送的訊息
+                    let clientMessage = $('#txtMessage').val();
+                    if (clientMessage == '') return; //訊息為不傳遞
 
-                    
                     //傳送訊息至Server端
-                    testHub.server.send(userID, $('#txtMessage').val());
+                    testHub.server.send(userID, clientMessage);
                     //清空訊息欄位
                     $('#txtMessage').val('');
-
-
-
-
-                },
-                quickSendMessage: function () {
-                    this.sendMessage();
+                    window.scrollTo(0, document.body.scrollHeight);
                 }
             }
         })
     </script>
 
 </body>
+
 </html>
