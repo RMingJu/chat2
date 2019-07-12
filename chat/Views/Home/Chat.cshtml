@@ -34,11 +34,14 @@
     <div id="app">
         <input type="text" id="userID" value="mark">
         <template v-for="x in todos">
-            <div class="container" v-bind:class="{ darker:x.myMessage}">
+            <div class="container" v-if="x.type == 'user' " v-bind:class="{ darker:x.myMessage}">
                 <img v-bind:src=x.img class="avatar" :class="{right: x.myMessage}" alt="Avatar" style="width:100%;">
                 <p v-show="!x.myMessage">{{x.userID}} :</p>
                 <p>{{x.text}}</p>
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
+            </div>
+            <div class="container" v-else>
+                <h3>test</h3>
             </div>
         </template>
         <br>
@@ -59,7 +62,7 @@
 
     <!-- Hub -->
     <script>
-        //連天訊息
+        //聊天訊息
         var messageData = [];
 
 
@@ -76,8 +79,7 @@
         //連線成功顯示歡迎訊息
         testHub.client.hello = function(message) {
 
-            var datetime = GetDateTime()
-
+            var datetime = GetDateTime() //取得時間
 
             let helloMessage = {
                 myMessage: false,
@@ -88,17 +90,16 @@
                 time: datetime
             }
             messageData.push(helloMessage);
-            console.log(message);
+            console.log(message); //將訊息加入到聊天室內
         };
 
         //addNewMessageToPage
         testHub.client.addNewMessageToPage = function(name, message) {
-
-
-            var datetime = GetDateTime()
+            var datetime = GetDateTime() //取得時間
 
             let isMyMessage = false;
-            if (userID == name) isMyMessage = true;
+            if (userID == name) isMyMessage = true; //判斷是否為自己發送的訊息
+
             let helloMessage = {
                 myMessage: isMyMessage,
                 userID: name,
@@ -107,10 +108,10 @@
                 text: message,
                 time: datetime
             }
-            messageData.push(helloMessage);
+            messageData.push(helloMessage); //將訊息加入到聊天室內
         };
 
-
+        //取得現在時間
         function GetDateTime() {
             var currentdate = new Date();
             var datetime = "時間: " + currentdate.getFullYear() + "/" +
