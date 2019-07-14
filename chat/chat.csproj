@@ -162,12 +162,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
+    <Compile Include="Controllers\ToolController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\TestHubs.cs" />
     <Compile Include="Models\LoginInfo.cs" />
+    <Compile Include="Models\Registration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PubClass.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +189,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\MingJuWeb - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\MingJuWeb - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\MingJuWeb - Web Deploy1.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -220,8 +224,12 @@
     <Content Include="Views\Member\Index.cshtml" />
     <Content Include="Views\Home\Registration.cshtml" />
     <Content Include="Views\Home\Chat.cshtml" />
+    <Content Include="Views\Home\RegistrationSuccessed.cshtml" />
+    <Content Include="Views\Home\RegistrationFaild.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Tool\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
   </ItemGroup>

@@ -130,137 +130,112 @@
 
     <div class="container">
 
-        <form class="well form-horizontal" action=" " method="post" id="contact_form">
+        <form class="well form-horizontal" action="@Url.Action("RegistrationProcessing")" method="post" id="contact_form" enctype="multipart/form-data">
             <fieldset>
 
                 <!-- Form Name -->
                 <legend>
                     <center>
-                        <h2><b>Registration Form</b></h2>
+                        <h2><b>7/28 南國國小 同學會</b></h2>
+                        <h3><b>地點: <a href="https://reurl.cc/G2ZAp">欣葉日本料理 中茂店(桃園藝文特區)</a></b></h3>
+                        <h3><b>地址: 桃園市桃園區同德五街67號中茂新天地 10樓 桃園藝文特區</b></h3>
                     </center>
                 </legend><br>
 
-                <!-- Text input-->
+                <!-- 姓名 -->
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label">First Name</label>
+                    <label class="col-md-4 control-label">姓名</label>
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="first_name" placeholder="First Name" class="form-control" type="text">
+                            <input name="userName" id="userName" placeholder="姓名" class="form-control" type="text" required="required">
                         </div>
                     </div>
                 </div>
 
-                <!-- Text input-->
+                <!-- 電話 -->
 
                 <div class="form-group">
-                    <label class="col-md-4 control-label">Last Name</label>
-                    <div class="col-md-4 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="last_name" placeholder="Last Name" class="form-control" type="text">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Department / Office</label>
-                    <div class="col-md-4 selectContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
-                            <select name="department" class="form-control selectpicker">
-                  <option value="">Select your Department/Office</option>
-                  <option>Department of Engineering</option>
-                  <option>Department of Agriculture</option>
-                  <option >Accounting Office</option>
-                  <option >Tresurer's Office</option>
-                  <option >MPDC</option>
-                  <option >MCTC</option>
-                  <option >MCR</option>
-                  <option >Mayor's Office</option>
-                  <option >Tourism Office</option>
-                </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Text input-->
-
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Username</label>
-                    <div class="col-md-4 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="user_name" placeholder="Username" class="form-control" type="text">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Text input-->
-
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Password</label>
-                    <div class="col-md-4 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="user_password" placeholder="Password" class="form-control" type="password">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Text input-->
-
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Confirm Password</label>
-                    <div class="col-md-4 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="confirm_password" placeholder="Confirm Password" class="form-control" type="password">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label">E-Mail</label>
-                    <div class="col-md-4 inputGroupContainer">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                            <input name="email" placeholder="E-Mail Address" class="form-control" type="text">
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Text input-->
-
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Contact No.</label>
+                    <label class="col-md-4 control-label">電話</label>
                     <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-                            <input name="contact_no" placeholder="(639)" class="form-control" type="text">
+                            <input name="phoneNumber" id="phoneNumber" placeholder="電話" class="form-control" type="text" required="required">
                         </div>
                     </div>
                 </div>
 
-                <!-- Select Basic -->
+                <!-- 目前工作 -->
 
+                <div class="form-group">
+                    <label class="col-md-4 control-label">目前工作</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                            <input name="job" id="job" placeholder="目前工作" class="form-control" type="text" required="required">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 工商時間 -->
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">工商時間</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-thumbs-up"></i></span>
+                            <textarea id="jobIntroduction" name="jobIntroduction" class="form-control" rows="4" cols="40" placeholder="工商一下自己，例如工作上可以提供優惠阿，家裡有甚麼特別產業..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 近期相片 -->
+
+                <div class="form-group">
+                    <label class="col-md-4 control-label">近期相片</label>
+                    <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="file" id="userImg" name="userImg" class="form-control" required="required">
+                        </div>
+                        <!--預覽區塊-->
+                        <img id="userImgDemo" src="" >
+                    </div>
+                </div>
+                
+               
+
+
+                <script type="text/javascript">
+                    var x = new FileReader;
+                    document.getElementById("userImg").onchange = function () {
+                        x.readAsDataURL(this.files[0]);
+                    }
+                    x.onloadend = function () {
+                        document.getElementById("userImgDemo").src = this.result;
+                        document.getElementById("userImgDemo").style.width = "300px";
+                        document.getElementById("userImgDemo").style.height = "300px";
+                    }
+                </script>
+
+
+                <!-- Text input-->
+                <!-- Select Basic -->
                 <!-- Success message -->
                 <div class="alert alert-success" role="alert" id="success_message">Success <i class="glyphicon glyphicon-thumbs-up"></i> Success!.</div>
 
                 <!-- Button -->
                 <div class="form-group">
                     <label class="col-md-4 control-label"></label>
-                    <div class="col-md-4"><br> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <div class="col-md-4">
+                        <br> &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                         <button type="submit" class="btn btn-warning">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSUBMIT <span class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</button>
                     </div>
                 </div>
 
             </fieldset>
         </form>
-    </div>
     </div>
     <!-- /.container -->
 
