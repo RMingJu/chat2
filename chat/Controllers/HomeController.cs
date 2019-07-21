@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -15,10 +16,25 @@ namespace chat.Controllers
             return View();
         }
 
+
+        public ActionResult GameRules()
+        {
+            return View();
+        }
+
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [Filter.MyLoginFilter()]
         public ActionResult Chat()
         {
             return View();
         }
+
+
+
 
         /// <summary>
         /// 報名表
@@ -37,14 +53,48 @@ namespace chat.Controllers
         /// <returns></returns>
         public ActionResult RegistrationProcessing(Models.Registration registrationData, HttpPostedFileBase userImg)
         {
+
             PubClass myClass = new PubClass();
 
             byte[] pic = null;
             if (userImg != null)
             {
-                
 
-                Image ii = Image.FromStream(userImg.InputStream);
+
+
+                pic = new byte[userImg.ContentLength];
+                userImg.InputStream.Read(pic, 0, userImg.ContentLength);
+
+                MemoryStream ms2 = new MemoryStream(pic);
+                Image originalImage = Image.FromStream(ms2);
+                if (originalImage.PropertyIdList.Contains(0x0112))
+                {
+                    int rotationValue = originalImage.GetPropertyItem(0x0112).Value[0];
+                    switch (rotationValue)
+                    {
+                        case 1: // landscape, do nothing
+                            break;
+
+                        case 8: // rotated 90 right
+                                // de-rotate:
+                            originalImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate270FlipNone);
+                            break;
+
+                        case 3: // bottoms up
+                            originalImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate180FlipNone);
+                            break;
+
+                        case 6: // rotated 90 left
+                            originalImage.RotateFlip(rotateFlipType: RotateFlipType.Rotate90FlipNone);
+                            break;
+                    }
+                }
+
+
+
+
+
+                Image ii = originalImage;
                 Bitmap bp = new Bitmap(ii, 300, 300);
                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                 bp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
@@ -52,7 +102,11 @@ namespace chat.Controllers
                 ms.Close();
             }
 
+
+
             
+            
+
 
 
 
