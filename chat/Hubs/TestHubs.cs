@@ -19,10 +19,10 @@ namespace chat.Hubs
         }
 
         //傳送訊息
-        public void Send(string name, string message)
+        public void Send(string name, string message,string imgPath)
         {
             // Call the addNewMessageToPage method to update clients.
-            Clients.All.addNewMessageToPage(name, message);
+            Clients.All.addNewMessageToPage(name, message, imgPath);
         }
     }
 }

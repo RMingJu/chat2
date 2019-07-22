@@ -28,9 +28,14 @@ namespace chat.Controllers
         }
 
         [Filter.MyLoginFilter()]
-        public ActionResult Chat()
+        public ActionResult Chat(DataTable dtUserInfoTemp)
         {
-            return View();
+            Models.UserInfo userInfo = (Models.UserInfo)TempData["userInfo"];
+            if (userInfo == null) {
+                RedirectToAction("Index","Login");
+            }
+
+            return View(userInfo);
         }
 
 
@@ -134,7 +139,7 @@ namespace chat.Controllers
             PubClass myClass = new PubClass();
             DataTable dtData = myClass.GetRegistrationData(userName);
             if (dtData.Rows.Count < 1) {
-                RedirectToAction("Registration");   //回到報名表
+                return RedirectToAction("Registration");   //回到報名表
             }
             DataRow drRow = dtData.Rows[0];
 

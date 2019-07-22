@@ -10,6 +10,9 @@ namespace chat
 {
     public class PubClass
     {
+        public DataTable dtReturn { get; set; }
+
+
         public String GetConnectionString() {
             String strCnn = "";
             strCnn = String.Format("Server=tcp:mjserver.database.windows.net,1433;Initial Catalog=MingJuWebDB;Persist Security Info=False;User ID={0};Password={1};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
@@ -86,6 +89,54 @@ namespace chat
         }
 
 
+        public Boolean IsLoginSuccessed(String phoneNumber)
+        {
+
+            bool bln = false;
+
+            DataTable dtTemp = new DataTable();
+
+            if (String.IsNullOrEmpty(phoneNumber))
+            {
+                return false;
+            }
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " SELECT TOP (1000) [userName],[phoneNumber],[job],[jobIntroduction],[entryDate],[imgPath] FROM [dbo].[ChatRoomUser] where phoneNumber = @phoneNumber ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@phoneNumber", SqlDbType.VarChar).Value = phoneNumber;
+
+
+                    cnn.Open();
+                    SqlDataReader mydr = cmd.ExecuteReader();
+                    if (mydr.HasRows)
+                    {
+                        dtTemp = new DataTable();
+                        dtTemp.Load(mydr);
+                    }
+                    mydr.Close();
+                    cnn.Close();
+                }
+            }
+
+            if (dtTemp != null)
+            {
+                if (dtTemp.Rows.Count > 0)
+                {
+                    dtReturn = dtTemp;
+                    bln = true;
+                }
+            }
+
+
+
+            return bln;
+        }
 
     }
 }

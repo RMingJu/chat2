@@ -1,5 +1,7 @@
 ﻿@{ Layout = null; }
 
+@model chat.Models.UserInfo
+
 <!DOCTYPE html>
 
 <!-- Vue.js -->
@@ -37,14 +39,12 @@
     <h2></h2>
 
 
-        
 
+    <input type="text" id="txtUserName" value="@Model.userName" />
+    <input type="text" id="txtImgPath" value="@Model.imgPath" />
+\
 
     <div id="app">
-
-
-       
-
 
         <template v-for="x in todos">
             <div class="container" v-if="x.type == 'user' " v-bind:class="{ darker:x.myMessage}">
@@ -82,8 +82,14 @@
         //建立hub
         var testHub = $.connection.testHubs;
 
+        //===============用戶資訊===============//
         //用戶名稱
-        var userID = window.prompt("請輸入使用者名稱");
+        var userID = $("#txtUserName").val();
+        //用戶img
+        var userImg = $("#txtImgPath").val();
+        //===============用戶資訊===============//
+
+
 
         //建立連線
         $.connection.hub.start().done(function() {
@@ -107,7 +113,7 @@
         };
 
         //addNewMessageToPage
-        testHub.client.addNewMessageToPage = function(name, message) {
+        testHub.client.addNewMessageToPage = function (name, message, userImg) {
             var datetime = GetDateTime() //取得時間
 
             let isMyMessage = false;
@@ -117,7 +123,8 @@
                 myMessage: isMyMessage,
                 userID: name,
                 type: 'user',
-                img: '@Href("~/userImg/")' + 'admin.jpg',
+                //img: '@Href("~/userImg/")' + 'admin.jpg',
+                img: '@Href("~/userImg/")' + userImg,
                 text: message,
                 time: datetime
             }
@@ -153,7 +160,7 @@
                     if (clientMessage == '') return; //訊息為不傳遞
 
                     //傳送訊息至Server端
-                    testHub.server.send(userID, clientMessage);
+                    testHub.server.send(userID, clientMessage, userImg);
                     //清空訊息欄位
                     $('#txtMessage').val('');
                     window.scrollTo(0, document.body.scrollHeight);
