@@ -32,7 +32,7 @@ namespace chat.Controllers
         {
             Models.UserInfo userInfo = (Models.UserInfo)TempData["userInfo"];
             if (userInfo == null) {
-                RedirectToAction("Index","Login");
+               return RedirectToAction("Index","Login");
             }
 
             return View(userInfo);
