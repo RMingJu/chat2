@@ -30,13 +30,19 @@ namespace chat.Controllers
         [Filter.MyLoginFilter()]
         public ActionResult Chat(DataTable dtUserInfoTemp)
         {
-            Models.UserInfo userInfo;
+            Models.UserInfo userInfo = new Models.UserInfo();
 
             if (TempData["userInfo"] == null){
+
+                if (Session["LoginName"] == null) {
+                    return RedirectToAction("Index", "Login");
+                }
+
                 String userPhoneNumber = Session["LoginName"].ToString();
                 PubClass myClass = new PubClass();
                 DataTable dtUserInfo = myClass.GetUserInfoByPhoneNumber(userPhoneNumber);
                 DataRow drRowUserInfo = dtUserInfo.Rows[0];
+
                 userInfo.userName = drRowUserInfo["userName"].ToString();
                 userInfo.phoneNumber = drRowUserInfo["phoneNumber"].ToString();
                 userInfo.job = drRowUserInfo["job"].ToString();

@@ -42,7 +42,48 @@
 
     <input type="text" id="txtUserName" value="@Model.userName" />
     <input type="text" id="txtImgPath" value="@Model.imgPath" />
-\
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="450px">
+                <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="450px">
+            </div>
+            <div class="col-lg-4">
+                <br />
+                <div class="btn-group-vertical" style="width:100%">
+                    <button class="btn btn-danger btnAnswer">
+                        <div class="pull-left">
+                            <h4><i class="fa fa-exclamation-triangle"></i>A</h4>
+                        </div>
+                    </button>
+                    <button class="btn btn-warning btnAnswer">
+                        <div class="pull-left">
+                            <h4><i class="fa fa-exclamation-triangle"></i>B</h4>
+                        </div>
+                    </button>
+                    <button class="btn btn-primary btnAnswer">
+                        <div class="pull-left">
+                            <h4><i class="fa fa-exclamation-triangle"></i>C</h4>
+                        </div>
+                        <div class="pull-right btnAnswer">
+                        </div>
+                    </button>
+                    <button class="btn btn-success btnAnswer">
+                        <div class="pull-left">
+                            <h4><i class="fa fa-exclamation-triangle"></i>D</h4>
+                        </div>
+                        <div class="pull-right">
+                        </div>
+                    </button>
+                    <br />
+                </div>
+            </div>
+            </div>
+        </div>
+
+
 
     <div id="app">
 
@@ -54,7 +95,42 @@
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
             </div>
             <div class="container" v-else>
-                <h3>test</h3>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="350px">
+                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="350px">
+                        </div>
+                        <div class="col-lg-4">
+                            <br />
+                            <div class="btn-group-vertical" style="width:100%">
+                                <button class="btn btn-danger" data-text="A">
+                                    <div class="pull-left">
+                                        <h4><i class="fa fa-exclamation-triangle"></i>A</h4>
+                                    </div>
+                                </button>
+                                <button class="btn btn-warning" data-text="B">
+                                    <div class="pull-left">
+                                        <h4><i class="fa fa-exclamation-triangle"></i>B</h4>
+                                    </div>
+                                </button>
+                                <button class="btn btn-primary" data-text="C">
+                                    <div class="pull-left">
+                                        <h4><i class="fa fa-exclamation-triangle"></i>C</h4>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                </button>
+                                <button class="btn btn-success" data-text="D">
+                                    <div class="pull-left">
+                                        <h4><i class="fa fa-exclamation-triangle"></i>D</h4>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                </button>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
             </div>
         </template>
         <br>
@@ -142,6 +218,16 @@
                 currentdate.getSeconds();
             return datetime
         }
+
+
+        $(".btnAnswer").click(function () {
+            console.log("123");
+            console.log($(this).attr("data-text"));
+
+            
+        });
+
+
     </script>
 
 
