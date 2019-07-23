@@ -103,7 +103,7 @@ namespace chat
 
             SqlConnection cnn = new SqlConnection(GetConnectionString());
             String strSQL = "";
-            strSQL += " SELECT TOP (1000) [userName],[phoneNumber],[job],[jobIntroduction],[entryDate],[imgPath] FROM [dbo].[ChatRoomUser] where phoneNumber = @phoneNumber ";
+            strSQL += " SELECT [userName],[phoneNumber],[job],[jobIntroduction],[entryDate],[imgPath] FROM [dbo].[ChatRoomUser] where phoneNumber = @phoneNumber ";
 
             using (cnn)
             {
@@ -136,6 +136,35 @@ namespace chat
 
 
             return bln;
+        }
+
+
+        public DataTable GetUserInfoByPhoneNumber(String phoneNumber){
+            DataTable dtTemp = new DataTable();
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " SELECT [userName],[phoneNumber],[job],[jobIntroduction],[entryDate],[imgPath] FROM [dbo].[ChatRoomUser] where phoneNumber = @phoneNumber ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@phoneNumber", SqlDbType.VarChar).Value = phoneNumber;
+
+
+                    cnn.Open();
+                    SqlDataReader mydr = cmd.ExecuteReader();
+                    if (mydr.HasRows)
+                    {
+                        dtTemp = new DataTable();
+                        dtTemp.Load(mydr);
+                    }
+                    mydr.Close();
+                    cnn.Close();
+                }   //using (cmd)
+            }   //using (cnn)
+            return dtTemp;
         }
 
     }
