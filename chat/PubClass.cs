@@ -5,6 +5,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace chat
 {
@@ -165,6 +167,41 @@ namespace chat
                 }   //using (cmd)
             }   //using (cnn)
             return dtTemp;
+        }
+
+
+
+        public DataTable GetQuestionByID(int questionID)
+        {
+            DataTable dtTemp = new DataTable();
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " SELECT * FROM [dbo].[Question] WHERE id = @id  ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = questionID;
+
+                    cnn.Open();
+                    SqlDataReader mydr = cmd.ExecuteReader();
+                    if (mydr.HasRows)
+                    {
+                        dtTemp = new DataTable();
+                        dtTemp.Load(mydr);
+                    }
+                    mydr.Close();
+                    cnn.Close();
+                }   //using (cmd)
+            }   //using (cnn)
+            return dtTemp;
+        }
+
+        public String ConvertToJsonString(DataTable dtData) {
+            String strJson = JsonConvert.SerializeObject(dtData, Formatting.Indented);
+            return strJson;
         }
 
     }

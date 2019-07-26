@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using Microsoft.AspNet.SignalR;
+using System.Data;
 
 namespace chat.Hubs
 {
@@ -24,5 +25,16 @@ namespace chat.Hubs
             // Call the addNewMessageToPage method to update clients.
             Clients.All.addNewMessageToPage(name, message, imgPath);
         }
+
+        //加入問題
+        public void AddQuesiton(int intQutionNumber)
+        {
+            PubClass myClass = new PubClass();
+            DataTable dtQuestion =  myClass.GetQuestionByID(1);
+            String Question = myClass.ConvertToJsonString(dtQuestion);
+            Clients.All.addQuestion(Question);
+        }
+
+
     }
 }
