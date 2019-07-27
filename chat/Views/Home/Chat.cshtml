@@ -40,49 +40,15 @@
 
 
 
-    <input type="text" id="txtUserName" value="@Model.userName" />
-    <input type="text" id="txtImgPath" value="@Model.imgPath" />
+    <input type="text" id="txtUserName" style="display:none;" value="@Model.userName" />
+    <input type="text" id="txtImgPath"  style="display:none;" value="@Model.imgPath" />
 
-
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="450px">
-                <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="450px">
-            </div>
-            <div class="col-lg-4">
-                <br />
-                <div class="btn-group-vertical" style="width:100%">
-                    <button class="btn btn-danger btnAnswer">
-                        <div class="pull-left">
-                            <h4><i class="fa fa-exclamation-triangle"></i>A</h4>
-                        </div>
-                    </button>
-                    <button class="btn btn-warning btnAnswer">
-                        <div class="pull-left">
-                            <h4><i class="fa fa-exclamation-triangle"></i>B</h4>
-                        </div>
-                    </button>
-                    <button class="btn btn-primary btnAnswer">
-                        <div class="pull-left">
-                            <h4><i class="fa fa-exclamation-triangle"></i>C</h4>
-                        </div>
-                        <div class="pull-right btnAnswer">
-                        </div>
-                    </button>
-                    <button class="btn btn-success btnAnswer">
-                        <div class="pull-left">
-                            <h4><i class="fa fa-exclamation-triangle"></i>D</h4>
-                        </div>
-                        <div class="pull-right">
-                        </div>
-                    </button>
-                    <br />
-                </div>
-            </div>
-            </div>
-        </div>
-
+    
+    <style>
+        #narTop {
+            position: fixed;
+        }
+    </style>
 
 
     <div id="app">
@@ -94,38 +60,25 @@
                 <p>{{x.text}}</p>
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
             </div>
-            <div class="container" v-else>
+            <div class="container" v-else-if="x.type == 'question' ">
                     <div class="row">
                         <div class="col-lg-8">
-                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="350px">
-                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="350px">
+                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="100%">
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-4" v-if="x.showChoose" >
                             <br />
                             <div class="btn-group-vertical" style="width:100%">
-                                <button class="btn btn-danger" data-text="A">
-                                    <div class="pull-left">
-                                        <h4><i class="fa fa-exclamation-triangle"></i>A</h4>
-                                    </div>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
+                                    A. {{convertQuestion(x.text,'A')}}
                                 </button>
-                                <button class="btn btn-warning" data-text="B">
-                                    <div class="pull-left">
-                                        <h4><i class="fa fa-exclamation-triangle"></i>B</h4>
-                                    </div>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
+                                    B. {{convertQuestion(x.text,'B')}}
                                 </button>
-                                <button class="btn btn-primary" data-text="C">
-                                    <div class="pull-left">
-                                        <h4><i class="fa fa-exclamation-triangle"></i>C</h4>
-                                    </div>
-                                    <div class="pull-right">
-                                    </div>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
+                                    C. {{convertQuestion(x.text,'C')}}
                                 </button>
-                                <button class="btn btn-success" data-text="D">
-                                    <div class="pull-left">
-                                        <h4><i class="fa fa-exclamation-triangle"></i>D</h4>
-                                    </div>
-                                    <div class="pull-right">
-                                    </div>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
+                                    D. {{convertQuestion(x.text,'C')}}
                                 </button>
                                 <br />
                             </div>
@@ -146,6 +99,11 @@
                     <button v-on:click="sendMessage" id="btnSend" class="btn btn-outline-success" type="button">傳送</button>
                 </div>
             </div>
+            <div>
+                <input type="text" id="txtQuestionNumber"  width="70px" placeholder="題號">
+                <button id="btnTest" v-on:click=addQuestion>發送問題</button>
+            </div>
+
         </nav>
     </div>
 
@@ -205,6 +163,37 @@
                 time: datetime
             }
             messageData.push(helloMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        //addQuestion
+        testHub.client.addQuestion = function (Question) {
+
+            let qeustionMessage = {
+                userID: '聊天室小幫手',
+                type: 'question',
+                text: JSON.parse(Question),
+                showChoose: true,
+                questionID: parseInt(JSON.parse(Question)[0]["id"])
+            }
+            messageData.push(qeustionMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        //answerQuesiton
+        testHub.client.answerQuesiton = function (intQutionNumber, blnAnswer) {
+            if (blnAnswer) {
+                for (var i = 0; i < messageData.length; i++) {
+                    // look for the entry with a matching `code` value
+                    if (messageData[i].type == 'question') {
+                        if (messageData[i].questionID == intQutionNumber) {
+                            messageData[i].showChoose = false;
+                        }
+                    }
+                }
+
+
+            }
         };
 
         //取得現在時間
@@ -250,6 +239,49 @@
                     //清空訊息欄位
                     $('#txtMessage').val('');
                     window.scrollTo(0, document.body.scrollHeight);
+                },
+                addQuestion() {
+
+                    //題號
+                    let intQuestionNumber = parseInt($("#txtQuestionNumber").val());
+
+                    //傳送訊息至Server端
+                    testHub.server.addQuesiton(intQuestionNumber);
+                },
+                convertQuestion(questionJson, itemType) {
+
+                    let item = "";
+                    switch (itemType) {
+                        case "A":
+                            item = "chooseA"
+                            break;
+                        case "B":
+                            item = "chooseA"
+                            break;
+                        case "C":
+                            item = "chooseA"
+                            break;
+                        case "D":
+                            item = "chooseA"
+                            break;
+                        case "id":
+                            item = "id"
+                            break;
+                    } 
+
+
+                    return (questionJson[0][item]);
+                },
+                answerQuestion: function (event) {
+
+                    //使用者
+                    let clientUser = $('#txtUserName').val();
+                    let btn = event.target;
+                    let choose = btn.getAttribute("data-text");
+                    let questionID = parseInt(btn.getAttribute("data-questionID"));
+                    //傳送訊息至Server端
+                    testHub.server.answerQuesiton(questionID, clientUser, choose);
+                    
                 }
             }
         })

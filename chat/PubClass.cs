@@ -170,7 +170,6 @@ namespace chat
         }
 
 
-
         public DataTable GetQuestionByID(int questionID)
         {
             DataTable dtTemp = new DataTable();
@@ -199,6 +198,42 @@ namespace chat
             return dtTemp;
         }
 
+        public bool AnswerQuestion(int id, String userName, String anwser)
+        {
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " INSERT INTO [MingJuWebDB].[dbo].[Answer] (id,userName,answer,entryTime) ";
+            strSQL += " VALUES(@id,@userName,@answer,GETDATE()) ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
+                    cmd.Parameters.Add("@userName", SqlDbType.NVarChar).Value = userName;
+                    cmd.Parameters.Add("@answer", SqlDbType.VarChar).Value = anwser;
+
+                    cnn.Open();
+                    int cc = cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    cnn.Close();
+
+                    if (cc > 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// DataTable轉換成Json格式
+        /// </summary>
+        /// <param name="dtData"></param>
+        /// <returns></returns>
         public String ConvertToJsonString(DataTable dtData) {
             String strJson = JsonConvert.SerializeObject(dtData, Formatting.Indented);
             return strJson;

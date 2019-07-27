@@ -30,9 +30,19 @@ namespace chat.Hubs
         public void AddQuesiton(int intQutionNumber)
         {
             PubClass myClass = new PubClass();
-            DataTable dtQuestion =  myClass.GetQuestionByID(1);
+            DataTable dtQuestion =  myClass.GetQuestionByID(intQutionNumber);
             String Question = myClass.ConvertToJsonString(dtQuestion);
             Clients.All.addQuestion(Question);
+        }
+
+        //回答問題
+        public void AnswerQuesiton(int intQutionNumber,String userName,String answer)
+        {
+            PubClass myClass = new PubClass();
+            bool blnAnswerQuestion = myClass.AnswerQuestion(intQutionNumber,userName, answer);
+           
+
+            Clients.All.answerQuesiton(intQutionNumber, blnAnswerQuestion);
         }
 
 
