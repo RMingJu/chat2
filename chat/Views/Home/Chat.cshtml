@@ -63,7 +63,7 @@
             <div class="container" v-else-if="x.type == 'question' ">
                     <div class="row">
                         <div class="col-lg-8">
-                            <img src="http://qnimate.com/wp-content/uploads/2014/03/images2.jpg" width="100%">
+                            <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
                         </div>
                         <div class="col-lg-4" v-if="x.showChoose" >
                             <br />
@@ -266,6 +266,12 @@
                             break;
                         case "id":
                             item = "id"
+                            break;
+                        case "questionImg":
+                            item = "questionImg"
+                            break;
+                        case "answerImg":
+                            item = "answerImg"
                             break;
                     } 
 
