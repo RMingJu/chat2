@@ -61,30 +61,48 @@
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
             </div>
             <div class="container" v-else-if="x.type == 'question' ">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
-                        </div>
-                        <div class="col-lg-4" v-if="x.showChoose" >
+                <div class="row">
+                    <div class="col-lg-8">
+                        <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-4" v-if="x.showChoose">
+                        <br />
+                        <div class="btn-group-vertical" style="width:100%">
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
+                                A. {{convertQuestion(x.text,'A')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
+                                B. {{convertQuestion(x.text,'B')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
+                                C. {{convertQuestion(x.text,'C')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
+                                D. {{convertQuestion(x.text,'D')}}
+                            </button>
                             <br />
-                            <div class="btn-group-vertical" style="width:100%">
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
-                                    A. {{convertQuestion(x.text,'A')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
-                                    B. {{convertQuestion(x.text,'B')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
-                                    C. {{convertQuestion(x.text,'C')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
-                                    D. {{convertQuestion(x.text,'C')}}
-                                </button>
-                                <br />
-                            </div>
                         </div>
                     </div>
+                </div>
             </div>
+            <div class="container" v-else-if="x.type == 'answer' ">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <img v-bind:src=convertAnswer(x.text,'img','answerImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-6">
+                        <img v-bind:src=convertAnswer(x.text,'img','nowImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-12">
+                        <div style="font-size:15px;">姓名:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','userName')}}</div>
+                        <div style="font-size:15px;">工作:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','job')}}</div>
+                        <div style="font-size:15px;">工商時間:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','jobIntroduction')}}</div>
+                    </div>
+                </div>
+                </div>
         </template>
         <br>
         <br>
@@ -100,8 +118,9 @@
                 </div>
             </div>
             <div>
-                <input type="text" id="txtQuestionNumber"  width="70px" placeholder="題號">
-                <button id="btnTest" v-on:click=addQuestion>發送問題</button>
+                <input type="text" id="txtQuestionNumber" width="70px" placeholder="題號">
+                <button id="btnAddQuestion" v-on:click=addQuestion>發送問題</button>
+                <button id="btnTest" v-on:click=sendAnswer>發送答案</button>
             </div>
 
         </nav>
@@ -143,7 +162,6 @@
                 time: datetime
             }
             messageData.push(helloMessage);
-            console.log(message); //將訊息加入到聊天室內
         };
 
         //addNewMessageToPage
@@ -191,10 +209,22 @@
                         }
                     }
                 }
-
-
             }
         };
+
+
+        //addQuestion
+        testHub.client.sendAnswer = function (imgColleaction) {
+
+            let qeustionMessage = {
+                userID: '聊天室小幫手',
+                type: 'answer',
+                text: JSON.parse(imgColleaction),
+            }
+            messageData.push(qeustionMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
 
         //取得現在時間
         function GetDateTime() {
@@ -256,13 +286,13 @@
                             item = "chooseA"
                             break;
                         case "B":
-                            item = "chooseA"
+                            item = "chooseB"
                             break;
                         case "C":
-                            item = "chooseA"
+                            item = "chooseC"
                             break;
                         case "D":
-                            item = "chooseA"
+                            item = "chooseD"
                             break;
                         case "id":
                             item = "id"
@@ -273,10 +303,12 @@
                         case "answerImg":
                             item = "answerImg"
                             break;
-                    } 
-
-
+                        case "nowImg":
+                            item = "nowImg"
+                            break;
+                    }
                     return (questionJson[0][item]);
+
                 },
                 answerQuestion: function (event) {
 
@@ -287,7 +319,26 @@
                     let questionID = parseInt(btn.getAttribute("data-questionID"));
                     //傳送訊息至Server端
                     testHub.server.answerQuesiton(questionID, clientUser, choose);
-                    
+
+                },
+                convertAnswer(answerJson, type, itemKey) {
+
+                    let itemType = "";
+                    switch (type) {
+                        case "img":
+                            itemType = "imgCollection";
+                            break;
+                        case "userInfo":
+                            itemType = "userInfo";
+                            break;
+                    }
+                    console.log(answerJson[0]);
+                    return JSON.parse(answerJson[0][itemType])[0][itemKey]
+
+                },
+                sendAnswer: function() {
+                    let intQuestionNumber = parseInt($("#txtQuestionNumber").val());
+                    testHub.server.sendAnswer(intQuestionNumber);
                 }
             }
         })

@@ -196,6 +196,7 @@
     <None Include="Properties\PublishProfiles\MingJuWeb - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\MingJuWeb - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\MingJuWeb - Web Deploy1.pubxml" />
+    <None Include="Properties\PublishProfiles\MingJuWebSite - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\MingJuWebSite - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

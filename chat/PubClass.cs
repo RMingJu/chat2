@@ -227,7 +227,33 @@ namespace chat
             }
         }
 
+        public DataTable GetAnswerImgByID(int questionID)
+        {
+            DataTable dtTemp = new DataTable();
 
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " SELECT [answerImg],[nowImg],[phoneNumber] FROM [dbo].[Question] WHERE id = @id  ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = questionID;
+
+                    cnn.Open();
+                    SqlDataReader mydr = cmd.ExecuteReader();
+                    if (mydr.HasRows)
+                    {
+                        dtTemp = new DataTable();
+                        dtTemp.Load(mydr);
+                    }
+                    mydr.Close();
+                    cnn.Close();
+                }   //using (cmd)
+            }   //using (cnn)
+            return dtTemp;
+        }
 
         /// <summary>
         /// DataTable轉換成Json格式

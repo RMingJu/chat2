@@ -1,5 +1,7 @@
 ﻿@{ Layout = null; }
 
+@model chat.Models.UserInfo
+
 <!DOCTYPE html>
 
 <!-- Vue.js -->
@@ -37,14 +39,19 @@
     <h2></h2>
 
 
-        
+
+    <input type="text" id="txtUserName" style="display:none;" value="@Model.userName" />
+    <input type="text" id="txtImgPath"  style="display:none;" value="@Model.imgPath" />
+
+    
+    <style>
+        #narTop {
+            position: fixed;
+        }
+    </style>
 
 
     <div id="app">
-
-
-       
-
 
         <template v-for="x in todos">
             <div class="container" v-if="x.type == 'user' " v-bind:class="{ darker:x.myMessage}">
@@ -53,8 +60,30 @@
                 <p>{{x.text}}</p>
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
             </div>
-            <div class="container" v-else>
-                <h3>test</h3>
+            <div class="container" v-else-if="x.type == 'question' ">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
+                        </div>
+                        <div class="col-lg-4" v-if="x.showChoose" >
+                            <br />
+                            <div class="btn-group-vertical" style="width:100%">
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
+                                    A. {{convertQuestion(x.text,'A')}}
+                                </button>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
+                                    B. {{convertQuestion(x.text,'B')}}
+                                </button>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
+                                    C. {{convertQuestion(x.text,'C')}}
+                                </button>
+                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
+                                    D. {{convertQuestion(x.text,'C')}}
+                                </button>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
             </div>
         </template>
         <br>
@@ -70,6 +99,11 @@
                     <button v-on:click="sendMessage" id="btnSend" class="btn btn-outline-success" type="button">傳送</button>
                 </div>
             </div>
+            <div>
+                <input type="text" id="txtQuestionNumber"  width="70px" placeholder="題號">
+                <button id="btnTest" v-on:click=addQuestion>發送問題</button>
+            </div>
+
         </nav>
     </div>
 
@@ -82,8 +116,14 @@
         //建立hub
         var testHub = $.connection.testHubs;
 
+        //===============用戶資訊===============//
         //用戶名稱
-        var userID = window.prompt("請輸入使用者名稱");
+        var userID = $("#txtUserName").val();
+        //用戶img
+        var userImg = $("#txtImgPath").val();
+        //===============用戶資訊===============//
+
+
 
         //建立連線
         $.connection.hub.start().done(function() {
@@ -107,7 +147,7 @@
         };
 
         //addNewMessageToPage
-        testHub.client.addNewMessageToPage = function(name, message) {
+        testHub.client.addNewMessageToPage = function (name, message, userImg) {
             var datetime = GetDateTime() //取得時間
 
             let isMyMessage = false;
@@ -117,11 +157,43 @@
                 myMessage: isMyMessage,
                 userID: name,
                 type: 'user',
-                img: '@Href("~/userImg/")' + 'admin.jpg',
+                //img: '@Href("~/userImg/")' + 'admin.jpg',
+                img: '@Href("~/userImg/")' + userImg,
                 text: message,
                 time: datetime
             }
             messageData.push(helloMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        //addQuestion
+        testHub.client.addQuestion = function (Question) {
+
+            let qeustionMessage = {
+                userID: '聊天室小幫手',
+                type: 'question',
+                text: JSON.parse(Question),
+                showChoose: true,
+                questionID: parseInt(JSON.parse(Question)[0]["id"])
+            }
+            messageData.push(qeustionMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        //answerQuesiton
+        testHub.client.answerQuesiton = function (intQutionNumber, blnAnswer) {
+            if (blnAnswer) {
+                for (var i = 0; i < messageData.length; i++) {
+                    // look for the entry with a matching `code` value
+                    if (messageData[i].type == 'question') {
+                        if (messageData[i].questionID == intQutionNumber) {
+                            messageData[i].showChoose = false;
+                        }
+                    }
+                }
+
+
+            }
         };
 
         //取得現在時間
@@ -135,6 +207,16 @@
                 currentdate.getSeconds();
             return datetime
         }
+
+
+        $(".btnAnswer").click(function () {
+            console.log("123");
+            console.log($(this).attr("data-text"));
+
+            
+        });
+
+
     </script>
 
 
@@ -153,10 +235,60 @@
                     if (clientMessage == '') return; //訊息為不傳遞
 
                     //傳送訊息至Server端
-                    testHub.server.send(userID, clientMessage);
+                    testHub.server.send(userID, clientMessage, userImg);
                     //清空訊息欄位
                     $('#txtMessage').val('');
                     window.scrollTo(0, document.body.scrollHeight);
+                },
+                addQuestion() {
+
+                    //題號
+                    let intQuestionNumber = parseInt($("#txtQuestionNumber").val());
+
+                    //傳送訊息至Server端
+                    testHub.server.addQuesiton(intQuestionNumber);
+                },
+                convertQuestion(questionJson, itemType) {
+
+                    let item = "";
+                    switch (itemType) {
+                        case "A":
+                            item = "chooseA"
+                            break;
+                        case "B":
+                            item = "chooseA"
+                            break;
+                        case "C":
+                            item = "chooseA"
+                            break;
+                        case "D":
+                            item = "chooseA"
+                            break;
+                        case "id":
+                            item = "id"
+                            break;
+                        case "questionImg":
+                            item = "questionImg"
+                            break;
+                        case "answerImg":
+                            item = "answerImg"
+                            break;
+                    } 
+
+                    console.log(questionJson[0][item]);
+                    return (questionJson[0][item]);
+                   
+                },
+                answerQuestion: function (event) {
+
+                    //使用者
+                    let clientUser = $('#txtUserName').val();
+                    let btn = event.target;
+                    let choose = btn.getAttribute("data-text");
+                    let questionID = parseInt(btn.getAttribute("data-questionID"));
+                    //傳送訊息至Server端
+                    testHub.server.answerQuesiton(questionID, clientUser, choose);
+                    
                 }
             }
         })

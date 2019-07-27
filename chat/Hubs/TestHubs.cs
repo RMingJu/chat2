@@ -2,6 +2,8 @@
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using System.Data;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace chat.Hubs
 {
@@ -40,11 +42,29 @@ namespace chat.Hubs
         {
             PubClass myClass = new PubClass();
             bool blnAnswerQuestion = myClass.AnswerQuestion(intQutionNumber,userName, answer);
-           
-
-            Clients.All.answerQuesiton(intQutionNumber, blnAnswerQuestion);
+            Clients.Caller.answerQuesiton(intQutionNumber, blnAnswerQuestion);
         }
 
+        //傳送答案
+        public void SendAnswer(int intQutionNumber)
+        {
+            PubClass myClass = new PubClass();
+            DataTable dtAnswwerImg = myClass.GetAnswerImgByID(intQutionNumber);
+            String imgColleaction = myClass.ConvertToJsonString(dtAnswwerImg);
+            DataTable dtUserIngfo = myClass.GetUserInfoByPhoneNumber(dtAnswwerImg.Rows[0]["phoneNumber"].ToString());
+            String userInfo = myClass.ConvertToJsonString(dtUserIngfo);
+
+            JArray ja = new JArray();
+            JObject jo = new JObject();
+            jo.Add(new JProperty("imgCollection", imgColleaction));
+            jo.Add(new JProperty("userInfo", userInfo));
+            ja.Add(jo);
+            String jsonString = JsonConvert.SerializeObject(ja);
+
+            Clients.All.sendAnswer(jsonString);
+        }
+
+        
 
     }
 }

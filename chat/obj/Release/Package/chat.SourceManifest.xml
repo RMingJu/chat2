@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="C:\個人專案\目前開發中\chat\chat\obj\Release\Package\PackageTmp" />
-  <setAcl path="C:\個人專案\目前開發中\chat\chat\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="C:\個人專案\目前開發中\chat\chat\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
-  <setAcl path="C:\個人專案\目前開發中\chat\chat\obj\Release\Package\PackageTmp\App_Data" setAclResourceType="Directory" setAclAccess="Write" />
+  <IisApp path="E:\專案\chat2\chat\obj\Release\Package\PackageTmp" />
+  <setAcl path="E:\專案\chat2\chat\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="E:\專案\chat2\chat\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+  <setAcl path="E:\專案\chat2\chat\obj\Release\Package\PackageTmp\App_Data" setAclResourceType="Directory" setAclAccess="Write" />
 </sitemanifest>
