@@ -180,6 +180,14 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AnswerImg\何明洲.PNG" />
+    <Content Include="AnswerImg\吳雅晴.PNG" />
+    <Content Include="AnswerImg\曾允芃.PNG" />
+    <Content Include="AnswerImg\李翰霖.PNG" />
+    <Content Include="AnswerImg\楊宜宣.PNG" />
+    <Content Include="AnswerImg\趙思涵.PNG" />
+    <Content Include="AnswerImg\陳御銘.PNG" />
+    <Content Include="AnswerImg\黃筠喩.PNG" />
     <Content Include="App_Data\pianoC.mp3" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -188,6 +196,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="QuestionImg\何明洲.png" />
+    <Content Include="QuestionImg\吳雅晴.PNG" />
+    <Content Include="QuestionImg\曾允芃.PNG" />
+    <Content Include="QuestionImg\李翰霖.PNG" />
+    <Content Include="QuestionImg\楊宜宣.PNG" />
+    <Content Include="QuestionImg\趙思涵.PNG" />
+    <Content Include="QuestionImg\陳御銘.PNG" />
+    <Content Include="QuestionImg\黃筠喩.PNG" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -215,6 +231,15 @@
     <Content Include="userImg\admin.jpg" />
     <Content Include="userImg\avatar_g2.jpg" />
     <Content Include="userImg\bandmember.jpg" />
+    <Content Include="userImg\何明洲.jpg" />
+    <Content Include="userImg\吳雅晴.jpg" />
+    <Content Include="userImg\曾允芃.jpg" />
+    <Content Include="userImg\李翰霖.jpg" />
+    <Content Include="userImg\楊大業.jpg" />
+    <Content Include="userImg\楊宜宣.jpg" />
+    <Content Include="userImg\趙思涵.jpg" />
+    <Content Include="userImg\陳御銘.jpg" />
+    <Content Include="userImg\黃筠喩.jpg" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -236,6 +261,7 @@
     <Content Include="Views\Home\RegistrationFaild.cshtml" />
     <Content Include="Views\Home\GameRules.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Login\LogOut.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Tool\" />

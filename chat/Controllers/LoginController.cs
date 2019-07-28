@@ -18,6 +18,11 @@ namespace chat.Controllers
             return View();
         }
 
+        public ActionResult LogOut()
+        {
+            Session.Remove("LoginName");
+            return View();
+        }
 
         public ActionResult ValidLoginProcess(Models.LoginInfo li)
         {
