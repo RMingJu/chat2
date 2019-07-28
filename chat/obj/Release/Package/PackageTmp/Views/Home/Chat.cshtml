@@ -61,29 +61,54 @@
                 <span :class="{timeRight: !x.myMessage,timeLeft: x.myMessage}">{{x.time}}</span>
             </div>
             <div class="container" v-else-if="x.type == 'question' ">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
-                        </div>
-                        <div class="col-lg-4" v-if="x.showChoose" >
+                <div class="row">
+                    <div class="col-lg-8">
+                        <img v-bind:src=convertQuestion(x.text,'questionImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-4" v-if="x.showChoose">
+                        <br />
+                        <div class="btn-group-vertical" style="width:100%">
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
+                                A. {{convertQuestion(x.text,'A')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
+                                B. {{convertQuestion(x.text,'B')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
+                                C. {{convertQuestion(x.text,'C')}}
+                            </button>
+                            <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
+                                D. {{convertQuestion(x.text,'D')}}
+                            </button>
                             <br />
-                            <div class="btn-group-vertical" style="width:100%">
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-danger" style="font-size:34px;" data-text="A">
-                                    A. {{convertQuestion(x.text,'A')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-warning text-light" style="font-size:34px;" data-text="B">
-                                    B. {{convertQuestion(x.text,'B')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-primary" style="font-size:34px;" data-text="C">
-                                    C. {{convertQuestion(x.text,'C')}}
-                                </button>
-                                <button v-on:click="answerQuestion" v-bind:data-questionID="convertQuestion(x.text,'id')" class="btn btn-success" style="font-size:34px;" data-text="D">
-                                    D. {{convertQuestion(x.text,'C')}}
-                                </button>
-                                <br />
-                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="container" v-else-if="x.type == 'answer' ">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <img v-bind:src=convertAnswer(x.text,'img','answerImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-6">
+                        <img v-bind:src=convertAnswer(x.text,'img','nowImg') width="100%" height="320px">
+                    </div>
+                    <div class="col-lg-12">
+                        <div style="font-size:15px;">姓名:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','userName')}}</div>
+                        <div style="font-size:15px;">工作:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','job')}}</div>
+                        <div style="font-size:15px;">工商時間:</div>
+                        <div style="font-size:20px; font-weight:bolder;">{{convertAnswer(x.text,'userInfo','jobIntroduction')}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="container" v-else-if="x.type == 'score' ">
+                <div class="row">
+                    <div class="col-lg-12" v-html="convertScoreTable(x.text)">
+                       
+                    </div>
+                </div>
             </div>
         </template>
         <br>
@@ -99,9 +124,12 @@
                     <button v-on:click="sendMessage" id="btnSend" class="btn btn-outline-success" type="button">傳送</button>
                 </div>
             </div>
-            <div>
-                <input type="text" id="txtQuestionNumber"  width="70px" placeholder="題號">
-                <button id="btnTest" v-on:click=addQuestion>發送問題</button>
+            <div v-if="isAdmin()">
+                <input type="text" id="txtQuestionNumber" width="70px" placeholder="題號">
+                <button id="btnAddQuestion" v-on:click=addQuestion>發送問題</button>
+                <button id="sendAns" v-on:click=sendAnswer>發送答案</button>
+                <button id="calcScore" v-on:click=calcScore>計算分數</button>
+                <button id="btnGetScoreTable" v-on:click=getScore>分數板</button>
             </div>
 
         </nav>
@@ -143,7 +171,6 @@
                 time: datetime
             }
             messageData.push(helloMessage);
-            console.log(message); //將訊息加入到聊天室內
         };
 
         //addNewMessageToPage
@@ -191,10 +218,41 @@
                         }
                     }
                 }
-
-
             }
         };
+
+
+        //sendAnswer
+        testHub.client.sendAnswer = function (imgColleaction) {
+
+            let qeustionMessage = {
+                userID: '聊天室小幫手',
+                type: 'answer',
+                text: JSON.parse(imgColleaction),
+            }
+            messageData.push(qeustionMessage); //將訊息加入到聊天室內
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        //calcScore
+        testHub.client.calcScore = function (question,bln) {
+
+            console.log(question + '  ' + bln);
+        };
+
+        //getScore
+        testHub.client.getScore = function (strJson) {
+            let json = JSON.parse(strJson);
+            let chatMessage = {
+                userID: '聊天室小幫手',
+                type: 'score',
+                text: json,
+            }
+            messageData.push(chatMessage); //將訊息加入到聊天室內
+        };
+
+       
+
 
         //取得現在時間
         function GetDateTime() {
@@ -207,14 +265,6 @@
                 currentdate.getSeconds();
             return datetime
         }
-
-
-        $(".btnAnswer").click(function () {
-            console.log("123");
-            console.log($(this).attr("data-text"));
-
-            
-        });
 
 
     </script>
@@ -256,13 +306,13 @@
                             item = "chooseA"
                             break;
                         case "B":
-                            item = "chooseA"
+                            item = "chooseB"
                             break;
                         case "C":
-                            item = "chooseA"
+                            item = "chooseC"
                             break;
                         case "D":
-                            item = "chooseA"
+                            item = "chooseD"
                             break;
                         case "id":
                             item = "id"
@@ -273,11 +323,12 @@
                         case "answerImg":
                             item = "answerImg"
                             break;
-                    } 
-
-                    console.log(questionJson[0][item]);
+                        case "nowImg":
+                            item = "nowImg"
+                            break;
+                    }
                     return (questionJson[0][item]);
-                   
+
                 },
                 answerQuestion: function (event) {
 
@@ -288,7 +339,84 @@
                     let questionID = parseInt(btn.getAttribute("data-questionID"));
                     //傳送訊息至Server端
                     testHub.server.answerQuesiton(questionID, clientUser, choose);
-                    
+
+                },
+                convertAnswer(answerJson, type, itemKey) {
+
+                    let itemType = "";
+                    switch (type) {
+                        case "img":
+                            itemType = "imgCollection";
+                            break;
+                        case "userInfo":
+                            itemType = "userInfo";
+                            break;
+                    }
+                    console.log(answerJson[0]);
+                    return JSON.parse(answerJson[0][itemType])[0][itemKey]
+
+                },
+                sendAnswer: function () {
+                    let bln = confirm('是否送出答案?');
+                    if (bln == false) return;
+                    let intQuestionNumber = parseInt($("#txtQuestionNumber").val());
+                    testHub.server.sendAnswer(intQuestionNumber);
+                },
+                isAdmin: function () {
+                    let bln = false;
+                    let clientUser = $('#txtUserName').val();
+                    if (clientUser == '何明洲')
+                        bln = true;
+                    return bln;
+                },
+                calcScore: function () {
+                    //題號
+                    let intQuestionNumber = parseInt($("#txtQuestionNumber").val());
+
+                    //傳送訊息至Server端
+                    testHub.server.calcScore(intQuestionNumber);
+                },
+                getScore: function () {
+                    //傳送訊息至Server端
+                    testHub.server.getScore();
+                },
+                convertScoreTable: function (json) {
+                    let jsonTable = "";
+                   
+                    jsonTable += "<div class='col-lg-12'>";
+                    for (i = 0; i < json.length; i++) {
+
+                        if (i <= 2) {
+                            jsonTable += "<div class='col-lg-12' style='border-width:3px;border-style:dashed;border-color:#FFAC55;padding:5px;' >";
+                        } else if (i == json.length - 1) {
+                            jsonTable += "<div class='col-lg-12' style='border-width:3px;border-style:dashed;border-color:red;padding:5px;' >";
+                        }
+                        else {
+                            jsonTable += "<div class='col-lg-12' style='border-width:3px;border-style:dashed;border-color:black;padding:5px;' >";
+                        }
+                        
+                        jsonTable += "<div class='col-lg-3'>";
+                        jsonTable += "排名: " + json[i]["RANK"];
+                        jsonTable += "</div>";
+
+                        //jsonTable += "<div class='col-lg-1'>";
+                        //jsonTable += "排名:";
+                        //jsonTable += "</div>";
+                        //jsonTable += "<div class='col-lg-2' style='font-size:18px;font-weight:bolder'>";
+                        //jsonTable += json[i]["RANK"];
+                        //jsonTable += "</div>";
+
+
+                        jsonTable += "<div class='col-lg-3'>";
+                        jsonTable += "姓名: " + json[i]["userName"];
+                        jsonTable += "</div>";
+                        jsonTable += "<div class='col-lg-3'>";
+                        jsonTable += "得分: " + json[i]["score"];
+                        jsonTable += "</div>";
+                        jsonTable += "</div>";
+                    }
+                    jsonTable += "</div>";
+                    return jsonTable;
                 }
             }
         })

@@ -265,5 +265,63 @@ namespace chat
             return strJson;
         }
 
+
+        public bool CalcScore(int id)
+        {
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " exec calcScore @id ";
+            
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
+                    cnn.Open();
+                    int cc = cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                    cnn.Close();
+
+                    if (cc > 0)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+        }
+
+
+        public DataTable GetScore()
+        {
+            DataTable dtTemp = new DataTable();
+
+            SqlConnection cnn = new SqlConnection(GetConnectionString());
+            String strSQL = "";
+            strSQL += " SELECT  ROW_NUMBER() OVER(ORDER BY score DESC) AS [RANK],userName,score FROM [dbo].[Score]  ";
+            strSQL += " WHERE isValid = 1 ORDER BY score DESC  ";
+
+            using (cnn)
+            {
+                using (SqlCommand cmd = new SqlCommand(strSQL, cnn))
+                {
+                    //cmd.Parameters.Add("@id", SqlDbType.Int).Value = questionID;
+
+                    cnn.Open();
+                    SqlDataReader mydr = cmd.ExecuteReader();
+                    if (mydr.HasRows)
+                    {
+                        dtTemp = new DataTable();
+                        dtTemp.Load(mydr);
+                    }
+                    mydr.Close();
+                    cnn.Close();
+                }   //using (cmd)
+            }   //using (cnn)
+            return dtTemp;
+        }
+
     }
 }

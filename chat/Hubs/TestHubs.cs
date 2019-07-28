@@ -64,7 +64,26 @@ namespace chat.Hubs
             Clients.All.sendAnswer(jsonString);
         }
 
-        
+        //計算分數
+        public void CalcScore(int intQutionNumber)
+        {
+            PubClass myClass = new PubClass();
+            bool blnCalcScore = myClass.CalcScore(intQutionNumber);
+            Clients.All.calcScore(intQutionNumber, blnCalcScore);
+        }
+
+        //取得分數板
+        public void GetScore()
+        {
+            PubClass myClass = new PubClass();
+            DataTable dtScore = myClass.GetScore();
+            String strJson = myClass.ConvertToJsonString(dtScore);
+            Clients.All.getScore(strJson);
+        }
+
+        public void clearMessage() {
+            Clients.All.clearMessage();
+        }
 
     }
 }
